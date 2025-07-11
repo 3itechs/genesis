@@ -54,7 +54,6 @@
         .nav-item {
              padding-left: 1rem;
         }
-        /* New styles for Annotate View */
         .annotate-toolbar-icon {
             color: var(--text-secondary);
         }
@@ -65,6 +64,18 @@
         .annotate-toolbar-icon.active {
             color: var(--accent-blue);
             background-color: rgba(0, 123, 255, 0.1);
+        }
+        .prompt-drop-zone {
+            border: 2px dashed var(--border-color);
+            transition: all 0.2s ease-in-out;
+        }
+        .prompt-drop-zone.highlight {
+            border-color: var(--accent-blue);
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+        .source-image.selected {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
         }
     </style>
 </head>
@@ -82,7 +93,7 @@
                 <span>Dashboard</span>
             </a>
             <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="generate">
-                <i data-lucide="sparkles" class="sidebar-icon h-5 w-5 mr-4"></i>
+                <i data-lucide="wand-2" class="sidebar-icon h-5 w-5 mr-4"></i>
                 <span>Generate</span>
             </a>
             <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="annotate">
@@ -259,44 +270,59 @@
 
             <!-- Generate View -->
             <div id="generate-view" class="view-content hidden h-full">
-                 <div class="flex flex-col h-full">
-                    <h1 class="text-3xl font-bold text-white mb-2">Generate Dataset</h1>
-                    <p class="text-text-secondary mb-6">Create synthetic data from text and image prompts.</p>
-                    <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-0">
-                        <div class="lg:col-span-2 flex flex-col bg-bg-secondary rounded-xl border border-border-color p-6">
-                            <h3 class="font-semibold text-white mb-4">Prompt</h3>
-                            <textarea placeholder="A wide-angle photograph of a futuristic city street at dusk, neon signs reflecting on the wet pavement, flying vehicles in the sky..." class="w-full flex-grow bg-bg-tertiary border border-border-color rounded-lg p-3 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"></textarea>
-                            <div class="mt-4 h-32 flex items-center justify-center border-2 border-dashed border-border-color rounded-lg text-center text-gray-500 hover:border-blue-500 hover:bg-bg-tertiary transition-colors cursor-pointer">
-                                <div>
-                                    <i data-lucide="image-plus" class="h-8 w-8 mx-auto mb-1"></i>
-                                    <p class="text-sm">Drag & drop an image prompt or click to upload</p>
-                                </div>
+                <div class="flex flex-col h-full">
+                    <h1 class="text-3xl font-bold text-white mb-2">Visual Prompt Assembler</h1>
+                    <p class="text-text-secondary mb-6">Construct a detailed prompt by selecting images for style, scene, and subject.</p>
+                    
+                    <div class="flex-1 grid grid-cols-12 gap-6 min-h-0">
+                        <!-- Source Images Panel -->
+                        <div class="col-span-3 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col">
+                            <h3 class="font-semibold text-white mb-4">Source Dataset Images</h3>
+                            <div id="source-image-gallery" class="flex-1 grid grid-cols-3 gap-2 overflow-y-auto pr-2">
+                                <!-- JS will populate this -->
                             </div>
                         </div>
-                        <div class="bg-bg-secondary rounded-xl border border-border-color p-6 flex flex-col">
-                            <h3 class="font-semibold text-white mb-4">Settings</h3>
-                            <div class="space-y-5">
-                                <div>
-                                    <label class="text-sm font-medium text-text-primary mb-2 block">Style</label>
-                                    <select class="w-full bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <option>Photorealistic</option>
-                                        <option>Illustration</option>
-                                        <option>Anime</option>
-                                        <option>Low Poly</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="text-sm font-medium text-text-primary mb-2 block">Variations</label>
-                                    <input type="range" min="1" max="50" value="8" class="w-full h-2 bg-bg-tertiary rounded-lg appearance-none cursor-pointer">
-                                </div>
-                                <div>
-                                    <label class="text-sm font-medium text-text-primary mb-2 block">Negative Prompt</label>
-                                    <input type="text" placeholder="e.g., blurry, cartoon, text" class="w-full bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
+
+                        <!-- Drop Zones -->
+                        <div class="col-span-5 flex flex-col gap-4">
+                            <div id="style-drop-zone" class="prompt-drop-zone flex-1 bg-bg-secondary rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer">
+                                <i data-lucide="palette" class="h-10 w-10 text-text-secondary mb-2"></i>
+                                <h4 class="font-semibold text-white">Style Source</h4>
+                                <p class="text-xs text-text-secondary text-center">Click an image, then click here to set the visual style.</p>
                             </div>
-                            <button class="w-full mt-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2 transition-colors">
-                                <i data-lucide="sparkles" class="h-5 w-5"></i>
-                                <span>Generate Images</span>
+                            <div id="scene-drop-zone" class="prompt-drop-zone flex-1 bg-bg-secondary rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer">
+                                <i data-lucide="image" class="h-10 w-10 text-text-secondary mb-2"></i>
+                                <h4 class="font-semibold text-white">Scene Source</h4>
+                                <p class="text-xs text-text-secondary text-center">Click an image, then click here to set the composition.</p>
+                            </div>
+                            <div id="subject-drop-zone" class="prompt-drop-zone flex-1 bg-bg-secondary rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer">
+                                <i data-lucide="user-square-2" class="h-10 w-10 text-text-secondary mb-2"></i>
+                                <h4 class="font-semibold text-white">Subject Source</h4>
+                                <p class="text-xs text-text-secondary text-center">Click an image, then click here to set the main subject.</p>
+                            </div>
+                        </div>
+
+                        <!-- Assembled Prompt Panel -->
+                        <div class="col-span-4 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col">
+                            <h3 class="font-semibold text-white mb-4">Assembled Prompt</h3>
+                            <div class="flex-1 flex flex-col gap-2">
+                                <div class="bg-bg-tertiary p-2 rounded">
+                                    <p class="text-xs text-blue-400 font-semibold">Style</p>
+                                    <p id="style-prompt-text" class="text-sm text-text-primary h-6"></p>
+                                </div>
+                                <div class="bg-bg-tertiary p-2 rounded">
+                                    <p class="text-xs text-green-400 font-semibold">Scene</p>
+                                    <p id="scene-prompt-text" class="text-sm text-text-primary h-6"></p>
+                                </div>
+                                <div class="bg-bg-tertiary p-2 rounded">
+                                    <p class="text-xs text-yellow-400 font-semibold">Subject</p>
+                                    <p id="subject-prompt-text" class="text-sm text-text-primary h-6"></p>
+                                </div>
+                                <textarea id="final-prompt" placeholder="Final prompt will be assembled here..." class="w-full flex-grow bg-bg-tertiary border border-border-color rounded-lg p-3 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none mt-4"></textarea>
+                            </div>
+                            <button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                                <i data-lucide="video" class="h-5 w-5"></i>
+                                <span>Generate with Veo</span>
                             </button>
                         </div>
                     </div>
@@ -500,7 +526,7 @@
         // Initialize Lucide icons
         lucide.createIcons();
 
-        // Page/View switching logic
+        // --- Navigation Logic ---
         const navLinks = document.querySelectorAll('.nav-item');
         const views = document.querySelectorAll('.view-content');
         const breadcrumbs = document.getElementById('breadcrumbs');
@@ -511,45 +537,119 @@
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetView = link.getAttribute('data-view');
-
-                // Update active link
-                document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active-nav'));
-                // Find all links that point to the same view and activate them
-                document.querySelectorAll(`.nav-item[data-view="${targetView}"]`).forEach(activeLink => {
-                    activeLink.classList.add('active-nav');
-                });
-
-
-                // Show target view and hide others
-                views.forEach(view => {
-                    if (view.id === `${targetView}-view`) {
-                        view.classList.remove('hidden');
-                    } else {
-                        view.classList.add('hidden');
-                    }
-                });
-                
-                // Toggle sidebars for annotate view
-                if (targetView === 'annotate') {
-                    mainSidebar.classList.add('hidden');
-                    mainSidebar.classList.remove('flex');
-                    annotationSidebar.classList.remove('hidden');
-                    annotationSidebar.classList.add('flex');
-                } else {
-                    mainSidebar.classList.remove('hidden');
-                    mainSidebar.classList.add('flex');
-                    annotationSidebar.classList.add('hidden');
-                    annotationSidebar.classList.remove('flex');
-                }
-                
-                // Update breadcrumbs
-                const viewName = targetView.charAt(0).toUpperCase() + targetView.slice(1);
-                breadcrumbs.textContent = viewName;
-                
-                // Re-initialize icons if they were hidden
-                lucide.createIcons();
+                switchView(targetView);
             });
         });
+
+        function switchView(targetView) {
+            // Update active link
+            document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active-nav'));
+            document.querySelectorAll(`.nav-item[data-view="${targetView}"]`).forEach(activeLink => {
+                activeLink.classList.add('active-nav');
+            });
+
+            // Show target view and hide others
+            views.forEach(view => {
+                view.style.display = view.id === `${targetView}-view` ? 'block' : 'none';
+            });
+            
+            // Toggle sidebars for annotate view
+            if (targetView === 'annotate') {
+                mainSidebar.classList.add('hidden');
+                mainSidebar.classList.remove('flex');
+                annotationSidebar.classList.remove('hidden');
+                annotationSidebar.classList.add('flex');
+            } else {
+                mainSidebar.classList.remove('hidden');
+                mainSidebar.classList.add('flex');
+                annotationSidebar.classList.add('hidden');
+                annotationSidebar.classList.remove('flex');
+            }
+            
+            // Update breadcrumbs
+            const viewName = targetView.charAt(0).toUpperCase() + targetView.slice(1);
+            breadcrumbs.textContent = viewName;
+            
+            // Re-initialize icons if they were hidden
+            lucide.createIcons();
+        }
+
+
+        // --- Generate Page Logic ---
+        const sourceImageGallery = document.getElementById('source-image-gallery');
+        const dropZones = {
+            style: document.getElementById('style-drop-zone'),
+            scene: document.getElementById('scene-drop-zone'),
+            subject: document.getElementById('subject-drop-zone')
+        };
+        const promptTexts = {
+            style: document.getElementById('style-prompt-text'),
+            scene: document.getElementById('scene-prompt-text'),
+            subject: document.getElementById('subject-prompt-text')
+        };
+        const finalPromptTextarea = document.getElementById('final-prompt');
+
+        let selectedImage = null;
+
+        const sourceImagesData = [
+            { src: 'https://images.unsplash.com/photo-1611601322175-8044f9345a99?q=80&w=200&auto=format&fit=crop', type: 'style', text: 'cinematic, high contrast, 35mm film look' },
+            { src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=200&auto=format&fit=crop', type: 'subject', text: 'a red sports car' },
+            { src: 'https://images.unsplash.com/photo-1549048375-7e45deab03c3?q=80&w=200&auto=format&fit=crop', type: 'scene', text: 'on a winding mountain road at sunset' },
+            { src: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=200&auto=format&fit=crop', type: 'style', text: 'dreamy, ethereal, soft focus' },
+            { src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=200&auto=format&fit=crop', type: 'subject', text: 'a yellow muscle car' },
+            { src: 'https://images.unsplash.com/photo-1470219556762-1771e7a93896?q=80&w=200&auto=format&fit=crop', type: 'scene', text: 'on a neon-lit city street at night' },
+        ];
+
+        // Populate source image gallery
+        sourceImagesData.forEach(data => {
+            const img = document.createElement('img');
+            img.src = data.src;
+            img.className = 'source-image w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity';
+            img.dataset.promptText = data.text;
+            img.dataset.type = data.type;
+            
+            img.addEventListener('click', () => {
+                if (selectedImage) {
+                    selectedImage.classList.remove('selected');
+                }
+                selectedImage = img;
+                selectedImage.classList.add('selected');
+                Object.values(dropZones).forEach(dz => dz.classList.add('highlight'));
+            });
+
+            sourceImageGallery.appendChild(img);
+        });
+
+        Object.entries(dropZones).forEach(([type, zone]) => {
+            zone.addEventListener('click', () => {
+                if (selectedImage) {
+                    // Update drop zone UI
+                    zone.innerHTML = `<img src="${selectedImage.src}" class="w-full h-full object-cover rounded-md">`;
+                    
+                    // Update prompt text
+                    promptTexts[type].textContent = selectedImage.dataset.promptText;
+
+                    // Update final prompt
+                    updateFinalPrompt();
+
+                    // Reset selection
+                    selectedImage.classList.remove('selected');
+                    selectedImage = null;
+                    Object.values(dropZones).forEach(dz => dz.classList.remove('highlight'));
+                }
+            });
+        });
+
+        function updateFinalPrompt() {
+            const style = promptTexts.style.textContent;
+            const subject = promptTexts.subject.textContent;
+            const scene = promptTexts.scene.textContent;
+            finalPromptTextarea.value = [subject, scene, style].filter(Boolean).join(', ');
+        }
+        
+        // Initial view setup
+        switchView('dashboard');
+
     </script>
 </body>
 </html>
