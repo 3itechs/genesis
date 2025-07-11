@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Genesis AI - Dashboard</title>
+    <title>Genesis AI - Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,633 +23,536 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-primary);
+            display: none; /* Hide body by default */
         }
-        .sidebar-icon {
-            stroke-width: 1.5;
-        }
+        .sidebar-icon { stroke-width: 1.5; }
         .project-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 15px -3px rgba(0, 123, 255, 0.1), 0 4px 6px -2px rgba(0, 123, 255, 0.05);
         }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4B5563;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #6B7280;
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6B7280; }
         .active-nav {
             background-color: var(--bg-tertiary);
             color: #ffffff;
             border-left: 3px solid var(--accent-blue);
             padding-left: calc(1rem - 3px);
         }
-        .nav-item {
-             padding-left: 1rem;
-        }
-        .annotate-toolbar-icon {
-            color: var(--text-secondary);
-        }
-        .annotate-toolbar-icon:hover {
-            color: white;
-            background-color: var(--bg-tertiary);
-        }
-        .annotate-toolbar-icon.active {
-            color: var(--accent-blue);
-            background-color: rgba(0, 123, 255, 0.1);
-        }
-        .prompt-drop-zone {
-            border: 2px dashed var(--border-color);
-            transition: all 0.2s ease-in-out;
-        }
-        .prompt-drop-zone.highlight {
-            border-color: var(--accent-blue);
-            background-color: rgba(0, 123, 255, 0.05);
-        }
-        .source-image.selected {
-            outline: 2px solid var(--accent-blue);
-            outline-offset: 2px;
-        }
+        .nav-item { padding-left: 1rem; }
+        .annotate-toolbar-icon { color: var(--text-secondary); }
+        .annotate-toolbar-icon:hover { color: white; background-color: var(--bg-tertiary); }
+        .annotate-toolbar-icon.active { color: var(--accent-blue); background-color: rgba(0, 123, 255, 0.1); }
+        .prompt-drop-zone { border: 2px dashed var(--border-color); transition: all 0.2s ease-in-out; }
+        .prompt-drop-zone.highlight { border-color: var(--accent-blue); background-color: rgba(0, 123, 255, 0.05); }
+        .source-image.selected { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
+        .tab-button.active { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
+<!-- The body content is structured into two main containers: one for the login page and one for the main app -->
+<body>
 
-    <!-- Main Sidebar Navigation -->
-    <aside id="main-sidebar" class="w-64 flex-shrink-0 bg-secondary border-r border-border-color flex flex-col transition-all duration-300">
-        <div class="h-16 flex items-center px-6 border-b border-border-color">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M15.5 3.82a1 1 0 0 1 .5-1.52A10 10 0 1 1 8.2 20.9a1 1 0 0 1 1.52-.5A10 10 0 0 1 15.5 3.82z"/><path d="M12 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0z"/><path d="M12 12h.01"/></svg>
-            <h1 class="text-xl font-bold text-white ml-3">Genesis</h1>
-        </div>
-        <nav class="flex-1 py-6 space-y-2">
-            <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200 active-nav" data-view="dashboard">
-                <i data-lucide="layout-dashboard" class="sidebar-icon h-5 w-5 mr-4"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="generate">
-                <i data-lucide="wand-2" class="sidebar-icon h-5 w-5 mr-4"></i>
-                <span>Generate</span>
-            </a>
-            <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="annotate">
-                <i data-lucide="edit-3" class="sidebar-icon h-5 w-5 mr-4"></i>
-                <span>Annotate</span>
-            </a>
-            <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="train">
-                <i data-lucide="rocket" class="sidebar-icon h-5 w-5 mr-4"></i>
-                <span>Train & Deploy</span>
-            </a>
-            <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="workspace">
-                <i data-lucide="users" class="sidebar-icon h-5 w-5 mr-4"></i>
-                <span>Workspace</span>
-            </a>
-        </nav>
-        <div class="px-6 py-4 border-t border-border-color">
-            <a href="#" class="flex items-center text-text-secondary hover:text-white transition-colors duration-200">
-                <i data-lucide="life-buoy" class="sidebar-icon h-5 w-5 mr-3"></i>
-                <span>Help & Docs</span>
-            </a>
-            <div class="mt-6 flex items-center">
-                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User Avatar" class="h-10 w-10 rounded-full object-cover">
-                <div class="ml-3">
-                    <p class="text-sm font-semibold text-white">Alex Reed</p>
-                    <p class="text-xs text-text-secondary">Pro Plan</p>
-                </div>
-            </div>
-        </div>
-    </aside>
-    
-    <!-- Annotation Toolbar (Initially hidden) -->
-    <aside id="annotation-sidebar" class="w-20 flex-shrink-0 bg-secondary border-r border-border-color flex-col hidden">
-        <div class="h-16 flex items-center justify-center border-b border-border-color">
-             <a href="#" class="nav-item" data-view="dashboard">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M15.5 3.82a1 1 0 0 1 .5-1.52A10 10 0 1 1 8.2 20.9a1 1 0 0 1 1.52-.5A10 10 0 0 1 15.5 3.82z"/><path d="M12 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0z"/><path d="M12 12h.01"/></svg>
-            </a>
-        </div>
-        <div class="flex-1 py-4 flex flex-col items-center space-y-2">
-            <button class="p-3 rounded-lg annotate-toolbar-icon active" title="Select Tool"><i data-lucide="mouse-pointer" class="h-6 w-6"></i></button>
-            <button class="p-3 rounded-lg annotate-toolbar-icon" title="Bounding Box"><i data-lucide="square" class="h-6 w-6"></i></button>
-            <button class="p-3 rounded-lg annotate-toolbar-icon" title="Polygon"><i data-lucide="hexagon" class="h-6 w-6"></i></button>
-            <button class="p-3 rounded-lg annotate-toolbar-icon" title="Magic Segmentation"><i data-lucide="sparkle" class="h-6 w-6"></i></button>
-            <button class="p-3 rounded-lg annotate-toolbar-icon" title="Keypoint"><i data-lucide="git-commit" class="h-6 w-6"></i></button>
-            <button class="p-3 rounded-lg annotate-toolbar-icon" title="Brush"><i data-lucide="paint-brush" class="h-6 w-6"></i></button>
-            <button class="p-3 rounded-lg annotate-toolbar-icon" title="3D Cube"><i data-lucide="box" class="h-6 w-6"></i></button>
-        </div>
-        <div class="py-4 flex flex-col items-center space-y-2">
-            <button class="p-3 rounded-lg annotate-toolbar-icon" title="Adjust Brightness"><i data-lucide="sun" class="h-6 w-6"></i></button>
-            <button class="p-3 rounded-lg annotate-toolbar-icon" title="Zoom In"><i data-lucide="zoom-in" class="h-6 w-6"></i></button>
-            <button class="p-3 rounded-lg annotate-toolbar-icon" title="Pan"><i data-lucide="move" class="h-6 w-6"></i></button>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col bg-bg-main">
-        <!-- Header -->
-        <header class="h-16 flex-shrink-0 bg-bg-secondary/80 backdrop-blur-lg border-b border-border-color flex items-center justify-between px-6">
-            <div class="flex items-center">
-                <p id="breadcrumbs" class="text-sm text-text-secondary">Dashboard</p>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="relative w-64">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"></i>
-                    <input type="text" placeholder="Search projects..." class="w-full bg-bg-tertiary border border-border-color rounded-lg pl-9 pr-4 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                </div>
-                <button class="p-2 rounded-lg hover:bg-bg-tertiary transition-colors">
-                    <i data-lucide="bell" class="h-5 w-5 text-text-secondary"></i>
-                </button>
-                <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                    <i data-lucide="plus" class="h-4 w-4"></i>
-                    <span>Create Project</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto p-8">
-
-            <!-- Dashboard View -->
-            <div id="dashboard-view" class="view-content">
-                <h1 class="text-3xl font-bold text-white mb-2">Projects</h1>
-                <p class="text-text-secondary mb-8">Your command center for all computer vision projects.</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    <!-- Project Card Example -->
-                    <div class="project-card bg-bg-secondary rounded-xl overflow-hidden border border-border-color transition-all duration-300 cursor-pointer group">
-                        <div class="h-36 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?q=80&w=870&auto=format&fit=crop')"></div>
-                        <div class="p-5">
-                            <h3 class="font-bold text-lg text-white">Retail Shelf Analysis</h3>
-                            <div class="flex items-center text-xs text-text-secondary mt-2 space-x-4">
-                                <span><i data-lucide="image" class="inline-block h-3 w-3 mr-1"></i>1,500 Images</span>
-                                <span><i data-lucide="tag" class="inline-block h-3 w-3 mr-1"></i>12 Classes</span>
-                            </div>
-                            <div class="mt-4">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-xs font-medium text-text-secondary">Annotation Progress</span>
-                                    <span class="text-xs font-medium text-blue-400">75%</span>
-                                </div>
-                                <div class="w-full bg-bg-tertiary rounded-full h-1.5">
-                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 75%"></div>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between mt-5">
-                                <div class="flex -space-x-2">
-                                    <img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="">
-                                    <img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704e" alt="">
-                                    <img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704f" alt="">
-                                </div>
-                                <div class="text-gray-500 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <i data-lucide="sparkles" class="h-5 w-5"></i><i data-lucide="edit-3" class="h-5 w-5"></i><i data-lucide="rocket" class="h-5 w-5"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- More cards... -->
-                    <div class="project-card bg-bg-secondary rounded-xl overflow-hidden border border-border-color transition-all duration-300 cursor-pointer">
-                        <div class="h-36 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1526614180703-827d26e5c652?q=80&w=870&auto=format&fit=crop')"></div>
-                        <div class="p-5">
-                            <h3 class="font-bold text-lg text-white">Self-Driving Cars</h3>
-                             <div class="flex items-center text-xs text-text-secondary mt-2 space-x-4">
-                                <span><i data-lucide="video" class="inline-block h-3 w-3 mr-1"></i>250 Videos</span>
-                                <span><i data-lucide="tag" class="inline-block h-3 w-3 mr-1"></i>8 Classes</span>
-                            </div>
-                            <div class="mt-4">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-xs font-medium text-text-secondary">Annotation Progress</span>
-                                    <span class="text-xs font-medium text-blue-400">92%</span>
-                                </div>
-                                <div class="w-full bg-bg-tertiary rounded-full h-1.5">
-                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 92%"></div>
-                                </div>
-                            </div>
-                             <div class="flex items-center justify-between mt-5">
-                                <div class="flex -space-x-2">
-                                    <img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="project-card bg-bg-secondary rounded-xl overflow-hidden border border-border-color transition-all duration-300 cursor-pointer">
-                        <div class="h-36 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581092921462-69209a4a75b9?q=80&w=870&auto=format&fit=crop')"></div>
-                        <div class="p-5">
-                            <h3 class="font-bold text-lg text-white">Medical Imaging AI</h3>
-                             <div class="flex items-center text-xs text-text-secondary mt-2 space-x-4">
-                                <span><i data-lucide="image" class="inline-block h-3 w-3 mr-1"></i>10,000+ Images</span>
-                                <span><i data-lucide="tag" class="inline-block h-3 w-3 mr-1"></i>5 Classes</span>
-                            </div>
-                            <div class="mt-4">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-xs font-medium text-text-secondary">Annotation Progress</span>
-                                    <span class="text-xs font-medium text-blue-400">45%</span>
-                                </div>
-                                <div class="w-full bg-bg-tertiary rounded-full h-1.5">
-                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 45%"></div>
-                                </div>
-                            </div>
-                             <div class="flex items-center justify-between mt-5">
-                                <div class="flex -space-x-2">
-                                    <img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704e" alt="">
-                                    <img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704f" alt="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- New Project Card -->
-                    <div class="flex items-center justify-center bg-bg-secondary/30 border-2 border-dashed border-border-color rounded-xl hover:bg-bg-secondary/50 hover:border-blue-500 transition-all duration-300 cursor-pointer">
-                        <div class="text-center">
-                            <i data-lucide="plus-circle" class="h-10 w-10 text-gray-500 mx-auto mb-2"></i>
-                            <p class="font-semibold text-text-primary">New Project</p>
-                        </div>
-                    </div>
-                </div>
+    <!-- =================================================================
+         LOGIN / SIGNUP PAGE CONTAINER
+         This section handles the user authentication flow.
+    ================================================================== -->
+    <div id="auth-container" class="w-full h-screen flex flex-col items-center justify-center bg-main p-4">
+        <div class="w-full max-w-md">
+            <div class="flex justify-center items-center mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M15.5 3.82a1 1 0 0 1 .5-1.52A10 10 0 1 1 8.2 20.9a1 1 0 0 1 1.52-.5A10 10 0 0 1 15.5 3.82z"/><path d="M12 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0z"/><path d="M12 12h.01"/></svg>
+                <h1 class="text-4xl font-bold text-white ml-4">Genesis</h1>
             </div>
 
-            <!-- Generate View -->
-            <div id="generate-view" class="view-content hidden h-full">
-                <div class="flex flex-col h-full">
-                    <h1 class="text-3xl font-bold text-white mb-2">Visual Prompt Assembler</h1>
-                    <p class="text-text-secondary mb-6">Construct a detailed prompt by selecting images for style, scene, and subject.</p>
-                    
-                    <div class="flex-1 grid grid-cols-12 gap-6 min-h-0">
-                        <!-- Source Images Panel -->
-                        <div class="col-span-3 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col">
-                            <h3 class="font-semibold text-white mb-4">Source Dataset Images</h3>
-                            <div id="source-image-gallery" class="flex-1 grid grid-cols-3 gap-2 overflow-y-auto pr-2">
-                                <!-- JS will populate this -->
-                            </div>
-                        </div>
-
-                        <!-- Drop Zones -->
-                        <div class="col-span-5 flex flex-col gap-4">
-                            <div id="style-drop-zone" class="prompt-drop-zone flex-1 bg-bg-secondary rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer">
-                                <i data-lucide="palette" class="h-10 w-10 text-text-secondary mb-2"></i>
-                                <h4 class="font-semibold text-white">Style Source</h4>
-                                <p class="text-xs text-text-secondary text-center">Click an image, then click here to set the visual style.</p>
-                            </div>
-                            <div id="scene-drop-zone" class="prompt-drop-zone flex-1 bg-bg-secondary rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer">
-                                <i data-lucide="image" class="h-10 w-10 text-text-secondary mb-2"></i>
-                                <h4 class="font-semibold text-white">Scene Source</h4>
-                                <p class="text-xs text-text-secondary text-center">Click an image, then click here to set the composition.</p>
-                            </div>
-                            <div id="subject-drop-zone" class="prompt-drop-zone flex-1 bg-bg-secondary rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer">
-                                <i data-lucide="user-square-2" class="h-10 w-10 text-text-secondary mb-2"></i>
-                                <h4 class="font-semibold text-white">Subject Source</h4>
-                                <p class="text-xs text-text-secondary text-center">Click an image, then click here to set the main subject.</p>
-                            </div>
-                        </div>
-
-                        <!-- Assembled Prompt Panel -->
-                        <div class="col-span-4 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col">
-                            <h3 class="font-semibold text-white mb-4">Assembled Prompt</h3>
-                            <div class="flex-1 flex flex-col gap-2">
-                                <div class="bg-bg-tertiary p-2 rounded">
-                                    <p class="text-xs text-blue-400 font-semibold">Style</p>
-                                    <p id="style-prompt-text" class="text-sm text-text-primary h-6"></p>
-                                </div>
-                                <div class="bg-bg-tertiary p-2 rounded">
-                                    <p class="text-xs text-green-400 font-semibold">Scene</p>
-                                    <p id="scene-prompt-text" class="text-sm text-text-primary h-6"></p>
-                                </div>
-                                <div class="bg-bg-tertiary p-2 rounded">
-                                    <p class="text-xs text-yellow-400 font-semibold">Subject</p>
-                                    <p id="subject-prompt-text" class="text-sm text-text-primary h-6"></p>
-                                </div>
-                                <textarea id="final-prompt" placeholder="Final prompt will be assembled here..." class="w-full flex-grow bg-bg-tertiary border border-border-color rounded-lg p-3 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none mt-4"></textarea>
-                            </div>
-                            <button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2 transition-colors">
-                                <i data-lucide="video" class="h-5 w-5"></i>
-                                <span>Generate with Veo</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Annotate View -->
-            <div id="annotate-view" class="view-content hidden h-full">
-                <div class="flex flex-col h-full">
-                    <div class="flex-1 grid grid-cols-12 gap-4 min-h-0">
-                        <!-- Image Canvas -->
-                        <div class="col-span-9 bg-black rounded-xl flex items-center justify-center relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=870&auto=format&fit=crop" class="max-h-full max-w-full object-contain">
-                            <!-- Mock Annotations -->
-                            <div class="absolute border-2 border-cyan-400" style="left: 15%; top: 40%; width: 40%; height: 35%;">
-                                <span class="absolute -top-6 left-0 bg-cyan-400 text-black text-xs font-bold px-1.5 py-0.5 rounded-sm">Car (98%)</span>
-                            </div>
-                            <div class="absolute border-2 border-dashed border-yellow-400" style="left: 60%; top: 35%; width: 15%; height: 25%;">
-                                <span class="absolute -top-6 left-0 bg-yellow-400 text-black text-xs font-bold px-1.5 py-0.5 rounded-sm">License Plate</span>
-                            </div>
-                        </div>
-                        <!-- AI Copilot & Labels Panel -->
-                        <div class="col-span-3 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col">
-                            <h3 class="font-semibold text-white mb-4">Annotation Copilot</h3>
-                            <div class="flex-1 space-y-3 overflow-y-auto pr-2">
-                                <!-- Quality Score -->
-                                <div class="bg-bg-tertiary p-3 rounded-lg">
-                                    <div class="flex justify-between items-center">
-                                        <p class="text-sm font-semibold text-white">Quality Score</p>
-                                        <p class="text-lg font-bold text-green-400">92%</p>
-                                    </div>
-                                    <p class="text-xs text-text-secondary mt-1">High confidence in all labels.</p>
-                                </div>
-                                <!-- AI Suggestion -->
-                                <div class="bg-bg-tertiary p-3 rounded-lg border-l-4 border-blue-500">
-                                    <p class="text-sm font-semibold text-white flex items-center"><i data-lucide="sparkles" class="h-4 w-4 mr-2 text-blue-400"></i>Suggestion</p>
-                                    <p class="text-xs text-text-secondary mt-1">Found 3 more potential cars. Would you like to auto-label them?</p>
-                                    <div class="mt-2 space-x-2">
-                                        <button class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">Yes, label</button>
-                                        <button class="text-xs bg-bg-tertiary hover:bg-gray-600 px-2 py-1 rounded">Ignore</button>
-                                    </div>
-                                </div>
-                                <!-- Annotations List -->
-                                <h4 class="font-semibold text-white pt-2">Labels (2)</h4>
-                                <div class="bg-gray-700/50 p-3 rounded-lg border-l-2 border-cyan-400 cursor-pointer">
-                                    <p class="font-semibold text-sm text-white">Car</p>
-                                    <p class="text-xs text-text-secondary">Bounding Box</p>
-                                </div>
-                                <div class="bg-gray-700/50 p-3 rounded-lg border-l-2 border-yellow-400 cursor-pointer">
-                                    <p class="font-semibold text-sm text-white">License Plate</p>
-                                    <p class="text-xs text-text-secondary">Bounding Box</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Chrono-Scrub & Filmstrip -->
-                    <div class="flex-shrink-0 mt-4 h-28 bg-bg-secondary rounded-xl border border-border-color p-3 flex flex-col">
-                         <h4 class="text-xs font-semibold text-white mb-2">History (Chrono-Scrub)</h4>
-                         <div class="flex-1 flex items-center">
-                             <input type="range" min="0" max="100" value="100" class="w-full h-1.5 bg-bg-tertiary rounded-lg appearance-none cursor-pointer">
-                         </div>
-                         <div class="flex items-center justify-between text-xs text-text-secondary mt-1">
-                            <span>Initial Image</span>
-                            <span>Box 'Car' created</span>
-                            <span>Box 'Plate' created</span>
-                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Train & Deploy View -->
-            <div id="train-view" class="view-content hidden">
-                <div class="flex justify-between items-center mb-8">
+            <!-- Login Form -->
+            <div id="login-form" class="bg-secondary rounded-xl border border-border-color p-8">
+                <h2 class="text-2xl font-bold text-white text-center mb-1">Welcome Back</h2>
+                <p class="text-text-secondary text-center mb-6">Login to continue to your workspace.</p>
+                <form class="space-y-6">
                     <div>
-                        <h1 class="text-3xl font-bold text-white">Train & Deploy</h1>
-                        <p class="text-text-secondary">Turn your labeled data into production-ready models.</p>
+                        <label for="email" class="text-sm font-medium text-text-primary">Email</label>
+                        <input type="email" name="email" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="you@example.com">
                     </div>
+                    <div>
+                        <label for="password" class="text-sm font-medium text-text-primary">Password</label>
+                        <input type="password" name="password" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="••••••••">
+                    </div>
+                    <button type="button" id="login-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors">Login</button>
+                </form>
+                <p class="text-sm text-center text-text-secondary mt-6">
+                    Don't have an account? <a href="#" id="show-signup" class="font-semibold text-blue-400 hover:underline">Sign up</a>
+                </p>
+            </div>
+
+            <!-- Signup Form (hidden by default) -->
+            <div id="signup-form" class="bg-secondary rounded-xl border border-border-color p-8 hidden">
+                <h2 class="text-2xl font-bold text-white text-center mb-1">Create Account</h2>
+                <p class="text-text-secondary text-center mb-6">Start your journey with Genesis AI.</p>
+                <form class="space-y-6">
+                    <div>
+                        <label class="text-sm font-medium text-text-primary">Full Name</label>
+                        <input type="text" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Alex Reed">
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-text-primary">Email</label>
+                        <input type="email" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="you@example.com">
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-text-primary">Password</label>
+                        <input type="password" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="••••••••">
+                    </div>
+                    <button type="button" id="signup-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors">Create Account</button>
+                </form>
+                <p class="text-sm text-center text-text-secondary mt-6">
+                    Already have an account? <a href="#" id="show-login" class="font-semibold text-blue-400 hover:underline">Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================================
+         MAIN APPLICATION CONTAINER
+         This is the core application, hidden until the user logs in.
+    ================================================================== -->
+    <div id="main-app-container" class="w-full h-screen hidden">
+        <!-- Main Sidebar Navigation -->
+        <aside id="main-sidebar" class="w-64 flex-shrink-0 bg-secondary border-r border-border-color flex flex-col transition-all duration-300">
+            <div class="h-16 flex items-center px-6 border-b border-border-color">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M15.5 3.82a1 1 0 0 1 .5-1.52A10 10 0 1 1 8.2 20.9a1 1 0 0 1 1.52-.5A10 10 0 0 1 15.5 3.82z"/><path d="M12 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0z"/><path d="M12 12h.01"/></svg>
+                <h1 class="text-xl font-bold text-white ml-3">Genesis</h1>
+            </div>
+            <nav class="flex-1 py-6 space-y-2">
+                <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="dashboard">
+                    <i data-lucide="layout-dashboard" class="sidebar-icon h-5 w-5 mr-4"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="generate">
+                    <i data-lucide="wand-2" class="sidebar-icon h-5 w-5 mr-4"></i>
+                    <span>Generate</span>
+                </a>
+                <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="annotate">
+                    <i data-lucide="edit-3" class="sidebar-icon h-5 w-5 mr-4"></i>
+                    <span>Annotate</span>
+                </a>
+                <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="train">
+                    <i data-lucide="rocket" class="sidebar-icon h-5 w-5 mr-4"></i>
+                    <span>Train & Deploy</span>
+                </a>
+                <a href="#" class="nav-item flex items-center px-6 py-2.5 text-text-primary hover:bg-bg-tertiary hover:text-white transition-colors duration-200" data-view="workspace">
+                    <i data-lucide="users" class="sidebar-icon h-5 w-5 mr-4"></i>
+                    <span>Workspace</span>
+                </a>
+            </nav>
+            <div class="px-6 py-4 border-t border-border-color">
+                <a href="#" class="flex items-center text-text-secondary hover:text-white transition-colors duration-200">
+                    <i data-lucide="life-buoy" class="sidebar-icon h-5 w-5 mr-3"></i>
+                    <span>Help & Docs</span>
+                </a>
+                <div id="user-profile-link" class="mt-6 flex items-center cursor-pointer group">
+                    <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User Avatar" class="h-10 w-10 rounded-full object-cover">
+                    <div class="ml-3">
+                        <p class="text-sm font-semibold text-white group-hover:text-blue-400">Alex Reed</p>
+                        <p class="text-xs text-text-secondary">Pro Plan</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Annotation Toolbar (Initially hidden) -->
+        <aside id="annotation-sidebar" class="w-20 flex-shrink-0 bg-secondary border-r border-border-color flex-col hidden">
+            <div class="h-16 flex items-center justify-center border-b border-border-color">
+                 <a href="#" class="nav-item p-0" data-view="dashboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M15.5 3.82a1 1 0 0 1 .5-1.52A10 10 0 1 1 8.2 20.9a1 1 0 0 1 1.52-.5A10 10 0 0 1 15.5 3.82z"/><path d="M12 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0z"/><path d="M12 12h.01"/></svg>
+                </a>
+            </div>
+            <div class="flex-1 py-4 flex flex-col items-center space-y-2">
+                <button class="p-3 rounded-lg annotate-toolbar-icon active" title="Select Tool"><i data-lucide="mouse-pointer" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Bounding Box"><i data-lucide="square" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Polygon"><i data-lucide="hexagon" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Magic Segmentation"><i data-lucide="sparkle" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Keypoint"><i data-lucide="git-commit" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Brush"><i data-lucide="paint-brush" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="3D Cube"><i data-lucide="box" class="h-6 w-6"></i></button>
+            </div>
+            <div class="py-4 flex flex-col items-center space-y-2 border-t border-border-color">
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Rotate"><i data-lucide="rotate-cw" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Blur Area"><i data-lucide="blinds" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Adjust Brightness"><i data-lucide="sun" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Zoom In"><i data-lucide="zoom-in" class="h-6 w-6"></i></button>
+                <button class="p-3 rounded-lg annotate-toolbar-icon" title="Pan"><i data-lucide="move" class="h-6 w-6"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col bg-bg-main">
+            <!-- Header -->
+            <header class="h-16 flex-shrink-0 bg-bg-secondary/80 backdrop-blur-lg border-b border-border-color flex items-center justify-between px-6">
+                <div class="flex items-center">
+                    <p id="breadcrumbs" class="text-sm text-text-secondary">Dashboard</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative w-64">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"></i>
+                        <input type="text" placeholder="Search projects..." class="w-full bg-bg-tertiary border border-border-color rounded-lg pl-9 pr-4 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                    </div>
+                    <button class="p-2 rounded-lg hover:bg-bg-tertiary transition-colors">
+                        <i data-lucide="bell" class="h-5 w-5 text-text-secondary"></i>
+                    </button>
                     <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                        <i data-lucide="play-circle" class="h-5 w-5"></i>
-                        <span>Start New Training</span>
+                        <i data-lucide="plus" class="h-4 w-4"></i>
+                        <span>Create Project</span>
                     </button>
                 </div>
+            </header>
 
-                <!-- Active Training -->
-                <h2 class="text-xl font-semibold text-white mb-4">Active Training</h2>
-                <div class="bg-bg-secondary border border-border-color rounded-xl p-6 mb-8">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="font-bold text-lg text-white">Self-Driving Cars - Model v1.3</h3>
-                            <p class="text-sm text-text-secondary">Training on 250 videos | YOLOv8 Architecture</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-2xl font-bold text-blue-400">78%</p>
-                            <p class="text-xs text-text-secondary">Est. 2 hours remaining</p>
-                        </div>
-                    </div>
-                    <div class="w-full bg-bg-tertiary rounded-full h-2.5 mt-4">
-                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 78%"></div>
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto p-8">
+
+                <!-- Dashboard View -->
+                <div id="dashboard-view" class="view-content">
+                    <h1 class="text-3xl font-bold text-white mb-2">Projects</h1>
+                    <p class="text-text-secondary mb-8">Your command center for all computer vision projects.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <a href="#" class="project-card-link" data-project-name="Retail Shelf Analysis">
+                            <div class="project-card bg-bg-secondary rounded-xl overflow-hidden border border-border-color transition-all duration-300 cursor-pointer group">
+                                <div class="h-36 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?q=80&w=870&auto=format&fit=crop')"></div>
+                                <div class="p-5">
+                                    <h3 class="font-bold text-lg text-white">Retail Shelf Analysis</h3>
+                                    <div class="flex items-center text-xs text-text-secondary mt-2 space-x-4"><span><i data-lucide="image" class="inline-block h-3 w-3 mr-1"></i>1,500 Images</span><span><i data-lucide="tag" class="inline-block h-3 w-3 mr-1"></i>12 Classes</span></div>
+                                    <div class="mt-4"><div class="flex justify-between items-center mb-1"><span class="text-xs font-medium text-text-secondary">Annotation Progress</span><span class="text-xs font-medium text-blue-400">75%</span></div><div class="w-full bg-bg-tertiary rounded-full h-1.5"><div class="bg-blue-500 h-1.5 rounded-full" style="width: 75%"></div></div></div>
+                                    <div class="flex items-center justify-between mt-5"><div class="flex -space-x-2"><img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt=""><img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704e" alt=""><img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704f" alt=""></div><div class="text-gray-500 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="wand-2" class="h-5 w-5"></i><i data-lucide="edit-3" class="h-5 w-5"></i><i data-lucide="rocket" class="h-5 w-5"></i></div></div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="project-card-link" data-project-name="Self-Driving Cars">
+                            <div class="project-card bg-bg-secondary rounded-xl overflow-hidden border border-border-color transition-all duration-300 cursor-pointer group">
+                                <div class="h-36 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1526614180703-827d26e5c652?q=80&w=870&auto=format&fit=crop')"></div>
+                                <div class="p-5">
+                                    <h3 class="font-bold text-lg text-white">Self-Driving Cars</h3>
+                                    <div class="flex items-center text-xs text-text-secondary mt-2 space-x-4"><span><i data-lucide="video" class="inline-block h-3 w-3 mr-1"></i>250 Videos</span><span><i data-lucide="tag" class="inline-block h-3 w-3 mr-1"></i>8 Classes</span></div>
+                                    <div class="mt-4"><div class="flex justify-between items-center mb-1"><span class="text-xs font-medium text-text-secondary">Annotation Progress</span><span class="text-xs font-medium text-blue-400">92%</span></div><div class="w-full bg-bg-tertiary rounded-full h-1.5"><div class="bg-blue-500 h-1.5 rounded-full" style="width: 92%"></div></div></div>
+                                    <div class="flex items-center justify-between mt-5"><div class="flex -space-x-2"><img class="inline-block h-8 w-8 rounded-full ring-2 ring-bg-secondary" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt=""></div><div class="text-gray-500 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="wand-2" class="h-5 w-5"></i><i data-lucide="edit-3" class="h-5 w-5"></i><i data-lucide="rocket" class="h-5 w-5"></i></div></div>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 </div>
 
-                <!-- Completed Models -->
-                <h2 class="text-xl font-semibold text-white mb-4">Completed Models</h2>
-                <div class="bg-bg-secondary border border-border-color rounded-xl">
-                    <table class="w-full text-left">
-                        <thead class="border-b border-border-color">
-                            <tr>
-                                <th class="p-4 text-sm font-semibold text-text-secondary">Model Version</th>
-                                <th class="p-4 text-sm font-semibold text-text-secondary">mAP</th>
-                                <th class="p-4 text-sm font-semibold text-text-secondary">Precision</th>
-                                <th class="p-4 text-sm font-semibold text-text-secondary">Recall</th>
-                                <th class="p-4 text-sm font-semibold text-text-secondary">Status</th>
-                                <th class="p-4 text-sm font-semibold text-text-secondary">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b border-border-color">
-                                <td class="p-4 font-medium text-white">Self-Driving Cars - v1.2</td>
-                                <td class="p-4 text-green-400 font-mono">0.92</td>
-                                <td class="p-4 text-green-400 font-mono">0.95</td>
-                                <td class="p-4 text-green-400 font-mono">0.89</td>
-                                <td class="p-4"><span class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded-full">Deployed</span></td>
-                                <td class="p-4">
-                                    <button class="text-blue-400 hover:text-blue-300 font-semibold text-sm">Deploy</button>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-border-color">
-                                <td class="p-4 font-medium text-white">Self-Driving Cars - v1.1</td>
-                                <td class="p-4 text-yellow-400 font-mono">0.85</td>
-                                <td class="p-4 text-yellow-400 font-mono">0.88</td>
-                                <td class="p-4 text-yellow-400 font-mono">0.82</td>
-                                <td class="p-4"><span class="bg-gray-500/20 text-gray-400 text-xs font-bold px-2 py-1 rounded-full">Archived</span></td>
-                                <td class="p-4">
-                                    <button class="text-blue-400 hover:text-blue-300 font-semibold text-sm">Deploy</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Project Detail View -->
+                <div id="project-view" class="view-content hidden">
+                    <h1 id="project-title" class="text-3xl font-bold text-white mb-2"></h1>
+                    <p class="text-text-secondary mb-6">Manage your project datasets, models, and settings.</p>
+                    <div class="border-b border-border-color mb-6">
+                        <nav class="flex space-x-8" aria-label="Tabs">
+                            <button class="tab-button py-4 px-1 border-b-2 font-medium text-sm text-text-secondary hover:text-white border-transparent active">Datasets</button>
+                            <button class="tab-button py-4 px-1 border-b-2 font-medium text-sm text-text-secondary hover:text-white border-transparent">Models</button>
+                            <button class="tab-button py-4 px-1 border-b-2 font-medium text-sm text-text-secondary hover:text-white border-transparent">Settings</button>
+                        </nav>
+                    </div>
+                    <!-- Datasets / Image Gallery -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-semibold text-white">Image Gallery</h2>
+                            <div class="flex items-center space-x-2">
+                                <button class="bg-bg-tertiary hover:bg-gray-700 text-text-primary font-semibold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                    <i data-lucide="upload-cloud" class="h-4 w-4"></i><span>Upload</span>
+                                </button>
+                                <button id="export-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                    <i data-lucide="download" class="h-4 w-4"></i><span>Export</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+                            <!-- JS will populate this -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Generate View -->
+                <div id="generate-view" class="view-content hidden h-full">
+                    <div class="flex flex-col h-full">
+                        <h1 class="text-3xl font-bold text-white mb-2">Visual Prompt Assembler</h1>
+                        <p class="text-text-secondary mb-6">Construct a detailed prompt by selecting images for style, scene, and subject.</p>
+                        <div class="flex-1 grid grid-cols-12 gap-6 min-h-0">
+                            <div class="col-span-3 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col"><h3 class="font-semibold text-white mb-4">Source Dataset Images</h3><div id="source-image-gallery" class="flex-1 grid grid-cols-3 gap-2 overflow-y-auto pr-2"></div></div>
+                            <div class="col-span-5 flex flex-col gap-4"><div id="style-drop-zone" class="prompt-drop-zone flex-1 bg-bg-secondary rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer"><i data-lucide="palette" class="h-10 w-10 text-text-secondary mb-2"></i><h4 class="font-semibold text-white">Style Source</h4><p class="text-xs text-text-secondary text-center">Click an image, then click here to set the visual style.</p></div><div id="scene-drop-zone" class="prompt-drop-zone flex-1 bg-bg-secondary rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer"><i data-lucide="image" class="h-10 w-10 text-text-secondary mb-2"></i><h4 class="font-semibold text-white">Scene Source</h4><p class="text-xs text-text-secondary text-center">Click an image, then click here to set the composition.</p></div><div id="subject-drop-zone" class="prompt-drop-zone flex-1 bg-bg-secondary rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer"><i data-lucide="user-square-2" class="h-10 w-10 text-text-secondary mb-2"></i><h4 class="font-semibold text-white">Subject Source</h4><p class="text-xs text-text-secondary text-center">Click an image, then click here to set the main subject.</p></div></div>
+                            <div class="col-span-4 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col"><h3 class="font-semibold text-white mb-4">Assembled Prompt</h3><div class="flex-1 flex flex-col gap-2"><div class="bg-bg-tertiary p-2 rounded"><p class="text-xs text-blue-400 font-semibold">Style</p><p id="style-prompt-text" class="text-sm text-text-primary h-6"></p></div><div class="bg-bg-tertiary p-2 rounded"><p class="text-xs text-green-400 font-semibold">Scene</p><p id="scene-prompt-text" class="text-sm text-text-primary h-6"></p></div><div class="bg-bg-tertiary p-2 rounded"><p class="text-xs text-yellow-400 font-semibold">Subject</p><p id="subject-prompt-text" class="text-sm text-text-primary h-6"></p></div><textarea id="final-prompt" placeholder="Final prompt will be assembled here..." class="w-full flex-grow bg-bg-tertiary border border-border-color rounded-lg p-3 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none mt-4"></textarea></div><button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2 transition-colors"><i data-lucide="video" class="h-5 w-5"></i><span>Generate with Veo</span></button></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Annotate View -->
+                <div id="annotate-view" class="view-content hidden h-full">
+                    <div class="flex flex-col h-full">
+                        <div class="flex-1 grid grid-cols-12 gap-4 min-h-0">
+                            <div class="col-span-9 bg-black rounded-xl flex items-center justify-center relative overflow-hidden"><img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=870&auto=format&fit=crop" class="max-h-full max-w-full object-contain"><div class="absolute border-2 border-cyan-400" style="left: 15%; top: 40%; width: 40%; height: 35%;"><span class="absolute -top-6 left-0 bg-cyan-400 text-black text-xs font-bold px-1.5 py-0.5 rounded-sm">Car (98%)</span></div><div class="absolute border-2 border-dashed border-yellow-400" style="left: 60%; top: 35%; width: 15%; height: 25%;"><span class="absolute -top-6 left-0 bg-yellow-400 text-black text-xs font-bold px-1.5 py-0.5 rounded-sm">License Plate</span></div></div>
+                            <div class="col-span-3 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col"><h3 class="font-semibold text-white mb-4">Annotation Copilot</h3><div class="flex-1 space-y-3 overflow-y-auto pr-2"><div class="bg-bg-tertiary p-3 rounded-lg"><div class="flex justify-between items-center"><p class="text-sm font-semibold text-white">Quality Score</p><p class="text-lg font-bold text-green-400">92%</p></div><p class="text-xs text-text-secondary mt-1">High confidence in all labels.</p></div><div class="bg-bg-tertiary p-3 rounded-lg border-l-4 border-blue-500"><p class="text-sm font-semibold text-white flex items-center"><i data-lucide="sparkles" class="h-4 w-4 mr-2 text-blue-400"></i>Suggestion</p><p class="text-xs text-text-secondary mt-1">Found 3 more potential cars. Would you like to auto-label them?</p><div class="mt-2 space-x-2"><button class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">Yes, label</button><button class="text-xs bg-bg-tertiary hover:bg-gray-600 px-2 py-1 rounded">Ignore</button></div></div><h4 class="font-semibold text-white pt-2">Labels (2)</h4><div class="bg-gray-700/50 p-3 rounded-lg border-l-2 border-cyan-400 cursor-pointer"><p class="font-semibold text-sm text-white">Car</p><p class="text-xs text-text-secondary">Bounding Box</p></div><div class="bg-gray-700/50 p-3 rounded-lg border-l-2 border-yellow-400 cursor-pointer"><p class="font-semibold text-sm text-white">License Plate</p><p class="text-xs text-text-secondary">Bounding Box</p></div></div></div>
+                        </div>
+                        <div class="flex-shrink-0 mt-4 h-28 bg-bg-secondary rounded-xl border border-border-color p-3 flex flex-col"><h4 class="text-xs font-semibold text-white mb-2">History (Chrono-Scrub)</h4><div class="flex-1 flex items-center"><input type="range" min="0" max="100" value="100" class="w-full h-1.5 bg-bg-tertiary rounded-lg appearance-none cursor-pointer"></div><div class="flex items-center justify-between text-xs text-text-secondary mt-1"><span>Initial Image</span><span>Box 'Car' created</span><span>Box 'Plate' created</span></div></div>
+                    </div>
+                </div>
+
+                <!-- Train & Deploy View -->
+                <div id="train-view" class="view-content hidden">
+                    <div class="flex justify-between items-center mb-8"><div><h1 class="text-3xl font-bold text-white">Train & Deploy</h1><p class="text-text-secondary">Turn your labeled data into production-ready models.</p></div><button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"><i data-lucide="play-circle" class="h-5 w-5"></i><span>Start New Training</span></button></div>
+                    <h2 class="text-xl font-semibold text-white mb-4">Active Training</h2><div class="bg-bg-secondary border border-border-color rounded-xl p-6 mb-8"><div class="flex items-center justify-between"><div><h3 class="font-bold text-lg text-white">Self-Driving Cars - Model v1.3</h3><p class="text-sm text-text-secondary">Training on 250 videos | YOLOv8 Architecture</p></div><div class="text-right"><p class="text-2xl font-bold text-blue-400">78%</p><p class="text-xs text-text-secondary">Est. 2 hours remaining</p></div></div><div class="w-full bg-bg-tertiary rounded-full h-2.5 mt-4"><div class="bg-blue-500 h-2.5 rounded-full" style="width: 78%"></div></div></div>
+                    <h2 class="text-xl font-semibold text-white mb-4">Completed Models</h2><div class="bg-bg-secondary border border-border-color rounded-xl"><table class="w-full text-left"><thead class="border-b border-border-color"><tr><th class="p-4 text-sm font-semibold text-text-secondary">Model Version</th><th class="p-4 text-sm font-semibold text-text-secondary">mAP</th><th class="p-4 text-sm font-semibold text-text-secondary">Precision</th><th class="p-4 text-sm font-semibold text-text-secondary">Recall</th><th class="p-4 text-sm font-semibold text-text-secondary">Status</th><th class="p-4 text-sm font-semibold text-text-secondary">Actions</th></tr></thead><tbody><tr class="border-b border-border-color"><td class="p-4 font-medium text-white">Self-Driving Cars - v1.2</td><td class="p-4 text-green-400 font-mono">0.92</td><td class="p-4 text-green-400 font-mono">0.95</td><td class="p-4 text-green-400 font-mono">0.89</td><td class="p-4"><span class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded-full">Deployed</span></td><td class="p-4"><button class="text-blue-400 hover:text-blue-300 font-semibold text-sm">Deploy</button></td></tr><tr class="border-b border-border-color"><td class="p-4 font-medium text-white">Self-Driving Cars - v1.1</td><td class="p-4 text-yellow-400 font-mono">0.85</td><td class="p-4 text-yellow-400 font-mono">0.88</td><td class="p-4 text-yellow-400 font-mono">0.82</td><td class="p-4"><span class="bg-gray-500/20 text-gray-400 text-xs font-bold px-2 py-1 rounded-full">Archived</span></td><td class="p-4"><button class="text-blue-400 hover:text-blue-300 font-semibold text-sm">Deploy</button></td></tr></tbody></table></div>
+                </div>
+                
+                <!-- Workspace View -->
+                <div id="workspace-view" class="view-content hidden">
+                     <h1 class="text-3xl font-bold text-white mb-2">Workspace</h1><p class="text-text-secondary mb-8">Manage your team, billing, and integrations.</p>
+                     <div class="bg-bg-secondary border border-border-color rounded-xl p-6"><div class="flex justify-between items-center mb-6"><h2 class="text-xl font-semibold text-white">Members</h2><button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"><i data-lucide="user-plus" class="h-4 w-4"></i><span>Invite Member</span></button></div><div class="space-y-4"><div class="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg"><div class="flex items-center"><img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User Avatar" class="h-10 w-10 rounded-full object-cover"><div class="ml-4"><p class="font-semibold text-white">Alex Reed</p><p class="text-sm text-text-secondary">alex@example.com</p></div></div><div class="flex items-center space-x-4"><span class="text-sm text-text-secondary">Admin</span><button><i data-lucide="more-vertical" class="h-5 w-5 text-text-secondary"></i></button></div></div><div class="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg"><div class="flex items-center"><img src="https://i.pravatar.cc/150?u=a042581f4e29026704e" alt="User Avatar" class="h-10 w-10 rounded-full object-cover"><div class="ml-4"><p class="font-semibold text-white">Jane Doe</p><p class="text-sm text-text-secondary">jane@example.com</p></div></div><div class="flex items-center space-x-4"><span class="text-sm text-text-secondary">Annotator</span><button><i data-lucide="more-vertical" class="h-5 w-5 text-text-secondary"></i></button></div></div></div><div class="mt-8 pt-6 border-t border-border-color"><h2 class="text-xl font-semibold text-white mb-4">API Keys</h2><div class="bg-bg-tertiary p-4 rounded-lg flex items-center justify-between"><div><p class="font-semibold text-white">Default API Key</p><p class="font-mono text-sm text-text-secondary">gen_sk_...a1b2</p></div><button class="text-red-500 hover:text-red-400 text-sm font-semibold">Revoke</button></div></div></div>
+                </div>
+
+                <!-- User Profile View -->
+                <div id="profile-view" class="view-content hidden">
+                    <h1 class="text-3xl font-bold text-white mb-8">User Profile</h1>
+                    <div class="max-w-2xl">
+                        <div class="bg-bg-secondary border border-border-color rounded-xl p-6">
+                            <div class="flex items-center space-x-6 mb-8">
+                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User Avatar" class="h-24 w-24 rounded-full object-cover ring-4 ring-blue-500/50">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-white">Alex Reed</h2>
+                                    <p class="text-text-secondary">alex@example.com</p>
+                                    <button class="mt-2 text-sm font-semibold text-blue-400 hover:underline">Change Picture</button>
+                                </div>
+                            </div>
+                            <form class="space-y-6">
+                                <div>
+                                    <label class="text-sm font-medium text-text-primary">Full Name</label>
+                                    <input type="text" value="Alex Reed" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-text-primary">Email Address</label>
+                                    <input type="email" value="alex@example.com" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-text-primary">Change Password</label>
+                                    <input type="password" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New Password">
+                                </div>
+                                <div class="pt-4">
+                                    <button type="button" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div id="workspace-view" class="view-content hidden">
-                 <h1 class="text-3xl font-bold text-white mb-2">Workspace</h1>
-                 <p class="text-text-secondary mb-8">Manage your team, billing, and integrations.</p>
+        </main>
+    </div>
 
-                 <div class="bg-bg-secondary border border-border-color rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-semibold text-white">Members</h2>
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                            <i data-lucide="user-plus" class="h-4 w-4"></i>
-                            <span>Invite Member</span>
-                        </button>
-                    </div>
-                    <div class="space-y-4">
-                        <!-- Member Row -->
-                        <div class="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg">
-                            <div class="flex items-center">
-                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User Avatar" class="h-10 w-10 rounded-full object-cover">
-                                <div class="ml-4">
-                                    <p class="font-semibold text-white">Alex Reed</p>
-                                    <p class="text-sm text-text-secondary">alex@example.com</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-4">
-                                <span class="text-sm text-text-secondary">Admin</span>
-                                <button><i data-lucide="more-vertical" class="h-5 w-5 text-text-secondary"></i></button>
-                            </div>
-                        </div>
-                        <!-- Member Row -->
-                        <div class="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg">
-                            <div class="flex items-center">
-                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704e" alt="User Avatar" class="h-10 w-10 rounded-full object-cover">
-                                <div class="ml-4">
-                                    <p class="font-semibold text-white">Jane Doe</p>
-                                    <p class="text-sm text-text-secondary">jane@example.com</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-4">
-                                <span class="text-sm text-text-secondary">Annotator</span>
-                                <button><i data-lucide="more-vertical" class="h-5 w-5 text-text-secondary"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 pt-6 border-t border-border-color">
-                         <h2 class="text-xl font-semibold text-white mb-4">API Keys</h2>
-                         <div class="bg-bg-tertiary p-4 rounded-lg flex items-center justify-between">
-                             <div>
-                                 <p class="font-semibold text-white">Default API Key</p>
-                                 <p class="font-mono text-sm text-text-secondary">gen_sk_...a1b2</p>
-                             </div>
-                             <button class="text-red-500 hover:text-red-400 text-sm font-semibold">Revoke</button>
-                         </div>
-                    </div>
-                 </div>
+    <!-- Export Modal -->
+    <div id="export-modal" class="fixed inset-0 bg-black/60 items-center justify-center hidden">
+        <div class="bg-bg-secondary rounded-xl border border-border-color p-8 w-full max-w-lg">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">Export Dataset</h2>
+                <button id="close-export-modal" class="text-text-secondary hover:text-white"><i data-lucide="x" class="h-6 w-6"></i></button>
             </div>
+            <form class="space-y-6">
+                <div>
+                    <label class="text-sm font-medium text-text-primary">Export Format</label>
+                    <select class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>COCO JSON</option>
+                        <option>Pascal VOC XML</option>
+                        <option>YOLO TXT</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-text-primary">Version</label>
+                    <input type="text" value="v1.4" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-text-primary">Include Augmentations</label>
+                    <div class="mt-2 flex items-center space-x-4 text-sm text-text-primary">
+                        <label><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"> Flip</label>
+                        <label><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"> Rotate</label>
+                        <label><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"> Grayscale</label>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <button type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center space-x-2">
+                        <i data-lucide="download" class="h-5 w-5"></i>
+                        <span>Download Export</span>
+                    </button>
+                </div>
+            </form>
         </div>
-    </main>
+    </div>
 
     <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.style.display = 'block'; // Show body after DOM is loaded
 
-        // --- Navigation Logic ---
-        const navLinks = document.querySelectorAll('.nav-item');
-        const views = document.querySelectorAll('.view-content');
-        const breadcrumbs = document.getElementById('breadcrumbs');
-        const mainSidebar = document.getElementById('main-sidebar');
-        const annotationSidebar = document.getElementById('annotation-sidebar');
+            // --- AUTHENTICATION LOGIC ---
+            const authContainer = document.getElementById('auth-container');
+            const mainAppContainer = document.getElementById('main-app-container');
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const showSignupBtn = document.getElementById('show-signup');
+            const showLoginBtn = document.getElementById('show-login');
+            const loginBtn = document.getElementById('login-btn');
+            const signupBtn = document.getElementById('signup-btn');
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+            // Initially, only auth container is visible
+            authContainer.style.display = 'flex';
+            mainAppContainer.style.display = 'none';
+
+            showSignupBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const targetView = link.getAttribute('data-view');
-                switchView(targetView);
-            });
-        });
-
-        function switchView(targetView) {
-            // Update active link
-            document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active-nav'));
-            document.querySelectorAll(`.nav-item[data-view="${targetView}"]`).forEach(activeLink => {
-                activeLink.classList.add('active-nav');
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
             });
 
-            // Show target view and hide others
-            views.forEach(view => {
-                view.style.display = view.id === `${targetView}-view` ? 'block' : 'none';
+            showLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                signupForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
             });
             
-            // Toggle sidebars for annotate view
-            if (targetView === 'annotate') {
-                mainSidebar.classList.add('hidden');
-                mainSidebar.classList.remove('flex');
-                annotationSidebar.classList.remove('hidden');
-                annotationSidebar.classList.add('flex');
-            } else {
-                mainSidebar.classList.remove('hidden');
-                mainSidebar.classList.add('flex');
-                annotationSidebar.classList.add('hidden');
-                annotationSidebar.classList.remove('flex');
+            const enterApp = () => {
+                authContainer.style.display = 'none';
+                mainAppContainer.style.display = 'flex';
+                switchView('dashboard'); // Start at dashboard
+            };
+
+            loginBtn.addEventListener('click', enterApp);
+            signupBtn.addEventListener('click', enterApp);
+
+
+            // --- NAVIGATION LOGIC ---
+            const navLinks = document.querySelectorAll('.nav-item');
+            const views = document.querySelectorAll('.view-content');
+            const breadcrumbs = document.getElementById('breadcrumbs');
+            const mainSidebar = document.getElementById('main-sidebar');
+            const annotationSidebar = document.getElementById('annotation-sidebar');
+            const userProfileLink = document.getElementById('user-profile-link');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetView = link.getAttribute('data-view');
+                    switchView(targetView);
+                });
+            });
+            
+            userProfileLink.addEventListener('click', () => switchView('profile'));
+
+            function switchView(targetView, context = {}) {
+                document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active-nav'));
+                document.querySelectorAll(`.nav-item[data-view="${targetView}"]`).forEach(activeLink => {
+                    activeLink.classList.add('active-nav');
+                });
+                if (targetView === 'profile') {
+                    // no nav item for profile, don't remove active state
+                }
+
+                views.forEach(view => {
+                    view.style.display = view.id === `${targetView}-view` ? 'block' : 'none';
+                });
+                
+                if (targetView === 'annotate') {
+                    mainSidebar.style.display = 'none';
+                    annotationSidebar.style.display = 'flex';
+                } else {
+                    mainSidebar.style.display = 'flex';
+                    annotationSidebar.style.display = 'none';
+                }
+                
+                let breadcrumbText = targetView.charAt(0).toUpperCase() + targetView.slice(1);
+                if (targetView === 'project') {
+                    breadcrumbText = `Dashboard / ${context.projectName}`;
+                    document.getElementById('project-title').textContent = context.projectName;
+                    populateProjectGallery();
+                }
+                breadcrumbs.textContent = breadcrumbText;
+                
+                lucide.createIcons();
+            }
+
+            // --- PROJECT PAGE LOGIC ---
+            document.querySelectorAll('.project-card-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const projectName = link.dataset.projectName;
+                    switchView('project', { projectName });
+                });
+            });
+
+            function populateProjectGallery() {
+                const gallery = document.querySelector('#project-view .grid');
+                gallery.innerHTML = ''; // Clear previous
+                for(let i=1; i<=16; i++) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'relative group cursor-pointer';
+                    imgContainer.innerHTML = `
+                        <img src="https://source.unsplash.com/random/200x200?car&sig=${i}" class="w-full h-32 object-cover rounded-lg">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                           <button class="text-white p-2 bg-black/50 rounded-full"><i data-lucide="edit-3" class="h-4 w-4"></i></button>
+                        </div>
+                    `;
+                    gallery.appendChild(imgContainer);
+                }
+                lucide.createIcons();
+            }
+
+
+            // --- GENERATE PAGE LOGIC ---
+            const sourceImageGallery = document.getElementById('source-image-gallery');
+            const dropZones = { style: document.getElementById('style-drop-zone'), scene: document.getElementById('scene-drop-zone'), subject: document.getElementById('subject-drop-zone') };
+            const promptTexts = { style: document.getElementById('style-prompt-text'), scene: document.getElementById('scene-prompt-text'), subject: document.getElementById('subject-prompt-text') };
+            const finalPromptTextarea = document.getElementById('final-prompt');
+            let selectedImage = null;
+            const sourceImagesData = [
+                { src: 'https://images.unsplash.com/photo-1611601322175-8044f9345a99?q=80&w=200&auto=format&fit=crop', type: 'style', text: 'cinematic, high contrast, 35mm film look' },
+                { src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=200&auto=format&fit=crop', type: 'subject', text: 'a red sports car' },
+                { src: 'https://images.unsplash.com/photo-1549048375-7e45deab03c3?q=80&w=200&auto=format&fit=crop', type: 'scene', text: 'on a winding mountain road at sunset' },
+                { src: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=200&auto=format&fit=crop', type: 'style', text: 'dreamy, ethereal, soft focus' },
+                { src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=200&auto=format&fit=crop', type: 'subject', text: 'a yellow muscle car' },
+                { src: 'https://images.unsplash.com/photo-1470219556762-1771e7a93896?q=80&w=200&auto=format&fit=crop', type: 'scene', text: 'on a neon-lit city street at night' },
+            ];
+            sourceImagesData.forEach(data => {
+                const img = document.createElement('img');
+                img.src = data.src;
+                img.className = 'source-image w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity';
+                img.dataset.promptText = data.text;
+                img.dataset.type = data.type;
+                img.addEventListener('click', () => {
+                    if (selectedImage) { selectedImage.classList.remove('selected'); }
+                    selectedImage = img;
+                    selectedImage.classList.add('selected');
+                    Object.values(dropZones).forEach(dz => dz.classList.add('highlight'));
+                });
+                sourceImageGallery.appendChild(img);
+            });
+            Object.entries(dropZones).forEach(([type, zone]) => {
+                zone.addEventListener('click', () => {
+                    if (selectedImage) {
+                        zone.innerHTML = `<img src="${selectedImage.src}" class="w-full h-full object-cover rounded-md">`;
+                        promptTexts[type].textContent = selectedImage.dataset.promptText;
+                        updateFinalPrompt();
+                        selectedImage.classList.remove('selected');
+                        selectedImage = null;
+                        Object.values(dropZones).forEach(dz => dz.classList.remove('highlight'));
+                    }
+                });
+            });
+            function updateFinalPrompt() {
+                const style = promptTexts.style.textContent;
+                const subject = promptTexts.subject.textContent;
+                const scene = promptTexts.scene.textContent;
+                finalPromptTextarea.value = [subject, scene, style].filter(Boolean).join(', ');
             }
             
-            // Update breadcrumbs
-            const viewName = targetView.charAt(0).toUpperCase() + targetView.slice(1);
-            breadcrumbs.textContent = viewName;
+            // --- EXPORT MODAL LOGIC ---
+            const exportBtn = document.getElementById('export-btn');
+            const exportModal = document.getElementById('export-modal');
+            const closeExportModalBtn = document.getElementById('close-export-modal');
+
+            exportBtn.addEventListener('click', () => exportModal.style.display = 'flex');
+            closeExportModalBtn.addEventListener('click', () => exportModal.style.display = 'none');
             
-            // Re-initialize icons if they were hidden
-            lucide.createIcons();
-        }
-
-
-        // --- Generate Page Logic ---
-        const sourceImageGallery = document.getElementById('source-image-gallery');
-        const dropZones = {
-            style: document.getElementById('style-drop-zone'),
-            scene: document.getElementById('scene-drop-zone'),
-            subject: document.getElementById('subject-drop-zone')
-        };
-        const promptTexts = {
-            style: document.getElementById('style-prompt-text'),
-            scene: document.getElementById('scene-prompt-text'),
-            subject: document.getElementById('subject-prompt-text')
-        };
-        const finalPromptTextarea = document.getElementById('final-prompt');
-
-        let selectedImage = null;
-
-        const sourceImagesData = [
-            { src: 'https://images.unsplash.com/photo-1611601322175-8044f9345a99?q=80&w=200&auto=format&fit=crop', type: 'style', text: 'cinematic, high contrast, 35mm film look' },
-            { src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=200&auto=format&fit=crop', type: 'subject', text: 'a red sports car' },
-            { src: 'https://images.unsplash.com/photo-1549048375-7e45deab03c3?q=80&w=200&auto=format&fit=crop', type: 'scene', text: 'on a winding mountain road at sunset' },
-            { src: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=200&auto=format&fit=crop', type: 'style', text: 'dreamy, ethereal, soft focus' },
-            { src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=200&auto=format&fit=crop', type: 'subject', text: 'a yellow muscle car' },
-            { src: 'https://images.unsplash.com/photo-1470219556762-1771e7a93896?q=80&w=200&auto=format&fit=crop', type: 'scene', text: 'on a neon-lit city street at night' },
-        ];
-
-        // Populate source image gallery
-        sourceImagesData.forEach(data => {
-            const img = document.createElement('img');
-            img.src = data.src;
-            img.className = 'source-image w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity';
-            img.dataset.promptText = data.text;
-            img.dataset.type = data.type;
-            
-            img.addEventListener('click', () => {
-                if (selectedImage) {
-                    selectedImage.classList.remove('selected');
-                }
-                selectedImage = img;
-                selectedImage.classList.add('selected');
-                Object.values(dropZones).forEach(dz => dz.classList.add('highlight'));
-            });
-
-            sourceImageGallery.appendChild(img);
         });
-
-        Object.entries(dropZones).forEach(([type, zone]) => {
-            zone.addEventListener('click', () => {
-                if (selectedImage) {
-                    // Update drop zone UI
-                    zone.innerHTML = `<img src="${selectedImage.src}" class="w-full h-full object-cover rounded-md">`;
-                    
-                    // Update prompt text
-                    promptTexts[type].textContent = selectedImage.dataset.promptText;
-
-                    // Update final prompt
-                    updateFinalPrompt();
-
-                    // Reset selection
-                    selectedImage.classList.remove('selected');
-                    selectedImage = null;
-                    Object.values(dropZones).forEach(dz => dz.classList.remove('highlight'));
-                }
-            });
-        });
-
-        function updateFinalPrompt() {
-            const style = promptTexts.style.textContent;
-            const subject = promptTexts.subject.textContent;
-            const scene = promptTexts.scene.textContent;
-            finalPromptTextarea.value = [subject, scene, style].filter(Boolean).join(', ');
-        }
-        
-        // Initial view setup
-        switchView('dashboard');
-
     </script>
 </body>
 </html>
