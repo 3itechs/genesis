@@ -48,6 +48,9 @@
         .prompt-drop-zone.highlight { border-color: var(--accent-blue); background-color: rgba(0, 123, 255, 0.05); }
         .source-image.selected { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
         .tab-button.active { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
+        /* Toggle Switch */
+        .toggle-checkbox:checked { right: 0; border-color: var(--accent-blue); }
+        .toggle-checkbox:checked + .toggle-label { background-color: var(--accent-blue); }
     </style>
 </head>
 <!-- The body content is structured into two main containers: one for the login page and one for the main app -->
@@ -286,7 +289,20 @@
                     <div class="flex flex-col h-full">
                         <div class="flex-1 grid grid-cols-12 gap-4 min-h-0">
                             <div class="col-span-9 bg-black rounded-xl flex items-center justify-center relative overflow-hidden"><img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=870&auto=format&fit=crop" class="max-h-full max-w-full object-contain"><div class="absolute border-2 border-cyan-400" style="left: 15%; top: 40%; width: 40%; height: 35%;"><span class="absolute -top-6 left-0 bg-cyan-400 text-black text-xs font-bold px-1.5 py-0.5 rounded-sm">Car (98%)</span></div><div class="absolute border-2 border-dashed border-yellow-400" style="left: 60%; top: 35%; width: 15%; height: 25%;"><span class="absolute -top-6 left-0 bg-yellow-400 text-black text-xs font-bold px-1.5 py-0.5 rounded-sm">License Plate</span></div></div>
-                            <div class="col-span-3 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col"><h3 class="font-semibold text-white mb-4">Annotation Copilot</h3><div class="flex-1 space-y-3 overflow-y-auto pr-2"><div class="bg-bg-tertiary p-3 rounded-lg"><div class="flex justify-between items-center"><p class="text-sm font-semibold text-white">Quality Score</p><p class="text-lg font-bold text-green-400">92%</p></div><p class="text-xs text-text-secondary mt-1">High confidence in all labels.</p></div><div class="bg-bg-tertiary p-3 rounded-lg border-l-4 border-blue-500"><p class="text-sm font-semibold text-white flex items-center"><i data-lucide="sparkles" class="h-4 w-4 mr-2 text-blue-400"></i>Suggestion</p><p class="text-xs text-text-secondary mt-1">Found 3 more potential cars. Would you like to auto-label them?</p><div class="mt-2 space-x-2"><button class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">Yes, label</button><button class="text-xs bg-bg-tertiary hover:bg-gray-600 px-2 py-1 rounded">Ignore</button></div></div><h4 class="font-semibold text-white pt-2">Labels (2)</h4><div class="bg-gray-700/50 p-3 rounded-lg border-l-2 border-cyan-400 cursor-pointer"><p class="font-semibold text-sm text-white">Car</p><p class="text-xs text-text-secondary">Bounding Box</p></div><div class="bg-gray-700/50 p-3 rounded-lg border-l-2 border-yellow-400 cursor-pointer"><p class="font-semibold text-sm text-white">License Plate</p><p class="text-xs text-text-secondary">Bounding Box</p></div></div></div>
+                            <div class="col-span-3 bg-bg-secondary rounded-xl border border-border-color p-4 flex flex-col">
+                                <h3 class="font-semibold text-white mb-4">Annotation Copilot</h3>
+                                <div class="flex-1 space-y-3 overflow-y-auto pr-2">
+                                    <button class="w-full bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 font-semibold py-3 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                                        <i data-lucide="bot" class="h-5 w-5"></i>
+                                        <span>Auto-Label with LLM</span>
+                                    </button>
+                                    <div class="bg-bg-tertiary p-3 rounded-lg"><div class="flex justify-between items-center"><p class="text-sm font-semibold text-white">Quality Score</p><p class="text-lg font-bold text-green-400">92%</p></div><p class="text-xs text-text-secondary mt-1">High confidence in all labels.</p></div>
+                                    <div class="bg-bg-tertiary p-3 rounded-lg border-l-4 border-blue-500"><p class="text-sm font-semibold text-white flex items-center"><i data-lucide="sparkles" class="h-4 w-4 mr-2 text-blue-400"></i>Suggestion</p><p class="text-xs text-text-secondary mt-1">Found 3 more potential cars. Would you like to auto-label them?</p><div class="mt-2 space-x-2"><button class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">Yes, label</button><button class="text-xs bg-bg-tertiary hover:bg-gray-600 px-2 py-1 rounded">Ignore</button></div></div>
+                                    <h4 class="font-semibold text-white pt-2">Labels (2)</h4>
+                                    <div class="bg-gray-700/50 p-3 rounded-lg border-l-2 border-cyan-400 cursor-pointer"><p class="font-semibold text-sm text-white">Car</p><p class="text-xs text-text-secondary">Bounding Box</p></div>
+                                    <div class="bg-gray-700/50 p-3 rounded-lg border-l-2 border-yellow-400 cursor-pointer"><p class="font-semibold text-sm text-white">License Plate</p><p class="text-xs text-text-secondary">Bounding Box</p></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="flex-shrink-0 mt-4 h-28 bg-bg-secondary rounded-xl border border-border-color p-3 flex flex-col"><h4 class="text-xs font-semibold text-white mb-2">History (Chrono-Scrub)</h4><div class="flex-1 flex items-center"><input type="range" min="0" max="100" value="100" class="w-full h-1.5 bg-bg-tertiary rounded-lg appearance-none cursor-pointer"></div><div class="flex items-center justify-between text-xs text-text-secondary mt-1"><span>Initial Image</span><span>Box 'Car' created</span><span>Box 'Plate' created</span></div></div>
                     </div>
@@ -308,33 +324,68 @@
                 <!-- User Profile View -->
                 <div id="profile-view" class="view-content hidden">
                     <h1 class="text-3xl font-bold text-white mb-8">User Profile</h1>
-                    <div class="max-w-2xl">
-                        <div class="bg-bg-secondary border border-border-color rounded-xl p-6">
-                            <div class="flex items-center space-x-6 mb-8">
-                                <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User Avatar" class="h-24 w-24 rounded-full object-cover ring-4 ring-blue-500/50">
-                                <div>
-                                    <h2 class="text-2xl font-bold text-white">Alex Reed</h2>
-                                    <p class="text-text-secondary">alex@example.com</p>
-                                    <button class="mt-2 text-sm font-semibold text-blue-400 hover:underline">Change Picture</button>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                            <div class="bg-bg-secondary border border-border-color rounded-xl p-6">
+                                <h2 class="text-xl font-semibold text-white mb-6">Personal Information</h2>
+                                <div class="flex items-center space-x-6 mb-8">
+                                    <img src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="User Avatar" class="h-24 w-24 rounded-full object-cover ring-4 ring-blue-500/50">
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-white">Alex Reed</h3>
+                                        <p class="text-text-secondary">alex@example.com</p>
+                                        <button class="mt-2 text-sm font-semibold text-blue-400 hover:underline">Change Picture</button>
+                                    </div>
                                 </div>
+                                <form class="space-y-6">
+                                    <div>
+                                        <label class="text-sm font-medium text-text-primary">Full Name</label>
+                                        <input type="text" value="Alex Reed" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-medium text-text-primary">Change Password</label>
+                                        <input type="password" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New Password">
+                                    </div>
+                                    <div class="pt-4">
+                                        <button type="button" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors">Save Changes</button>
+                                    </div>
+                                </form>
                             </div>
-                            <form class="space-y-6">
-                                <div>
-                                    <label class="text-sm font-medium text-text-primary">Full Name</label>
-                                    <input type="text" value="Alex Reed" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="lg:col-span-1 space-y-8">
+                             <div class="bg-bg-secondary border border-border-color rounded-xl p-6">
+                                <h2 class="text-xl font-semibold text-white mb-4">Plan & Usage</h2>
+                                <div class="space-y-5">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1"><span class="text-sm font-medium text-text-primary">Current Plan</span><span class="font-semibold text-blue-400">Pro</span></div>
+                                        <button class="w-full text-sm font-semibold text-blue-400 hover:underline">Manage Subscription</button>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-medium text-text-primary mb-2 block">Storage Used (65GB / 100GB)</label>
+                                        <div class="w-full bg-bg-tertiary rounded-full h-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div></div>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-medium text-text-primary mb-2 block">Training Hours (12 / 50)</label>
+                                        <div class="w-full bg-bg-tertiary rounded-full h-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 24%"></div></div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="text-sm font-medium text-text-primary">Email Address</label>
-                                    <input type="email" value="alex@example.com" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+                             </div>
+                             <div class="bg-bg-secondary border border-border-color rounded-xl p-6">
+                                <h2 class="text-xl font-semibold text-white mb-4">Notifications</h2>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <label for="project-updates" class="text-sm text-text-primary">Project Updates</label>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="toggle" id="project-updates" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/><label for="project-updates" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label></div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <label for="billing-updates" class="text-sm text-text-primary">Billing</label>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="toggle" id="billing-updates" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/><label for="billing-updates" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label></div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <label for="product-updates" class="text-sm text-text-primary">New Features</label>
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="toggle" id="product-updates" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/><label for="product-updates" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label></div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="text-sm font-medium text-text-primary">Change Password</label>
-                                    <input type="password" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New Password">
-                                </div>
-                                <div class="pt-4">
-                                    <button type="button" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors">Save Changes</button>
-                                </div>
-                            </form>
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -343,7 +394,7 @@
     </div>
 
     <!-- Export Modal -->
-    <div id="export-modal" class="fixed inset-0 bg-black/60 items-center justify-center hidden">
+    <div id="export-modal" class="fixed inset-0 bg-black/60 items-center justify-center hidden z-50">
         <div class="bg-bg-secondary rounded-xl border border-border-color p-8 w-full max-w-lg">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-white">Export Dataset</h2>
@@ -356,18 +407,35 @@
                         <option>COCO JSON</option>
                         <option>Pascal VOC XML</option>
                         <option>YOLO TXT</option>
+                        <option>CreateML</option>
+                        <option>TFRecord</option>
                     </select>
                 </div>
                 <div>
                     <label class="text-sm font-medium text-text-primary">Version</label>
                     <input type="text" value="v1.4" class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <div>
-                    <label class="text-sm font-medium text-text-primary">Include Augmentations</label>
-                    <div class="mt-2 flex items-center space-x-4 text-sm text-text-primary">
-                        <label><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"> Flip</label>
-                        <label><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"> Rotate</label>
-                        <label><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"> Grayscale</label>
+                <div class="pt-2">
+                    <a href="#" id="advanced-options-toggle" class="text-sm font-semibold text-blue-400 hover:underline">Show Advanced Options</a>
+                </div>
+                <div id="advanced-options" class="hidden space-y-6 pt-2">
+                    <div>
+                        <label class="text-sm font-medium text-text-primary">Image Size</label>
+                        <select class="w-full mt-2 bg-bg-tertiary border border-border-color rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>Original</option>
+                            <option>1024x1024</option>
+                            <option>640x640</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-text-primary">Include Augmentations</label>
+                        <div class="mt-2 grid grid-cols-3 gap-2 text-sm text-text-primary">
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"><span>Flip</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"><span>Rotate</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"><span>Grayscale</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"><span>Crop</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="form-checkbox bg-bg-tertiary border-border-color text-blue-500"><span>Noise</span></label>
+                        </div>
                     </div>
                 </div>
                 <div class="pt-4">
@@ -394,31 +462,15 @@
             const loginBtn = document.getElementById('login-btn');
             const signupBtn = document.getElementById('signup-btn');
 
-            // Initially, only auth container is visible
             authContainer.style.display = 'flex';
             mainAppContainer.style.display = 'none';
 
-            showSignupBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                loginForm.classList.add('hidden');
-                signupForm.classList.remove('hidden');
-            });
-
-            showLoginBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                signupForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-            });
+            showSignupBtn.addEventListener('click', (e) => { e.preventDefault(); loginForm.classList.add('hidden'); signupForm.classList.remove('hidden'); });
+            showLoginBtn.addEventListener('click', (e) => { e.preventDefault(); signupForm.classList.add('hidden'); loginForm.classList.remove('hidden'); });
             
-            const enterApp = () => {
-                authContainer.style.display = 'none';
-                mainAppContainer.style.display = 'flex';
-                switchView('dashboard'); // Start at dashboard
-            };
-
+            const enterApp = () => { authContainer.style.display = 'none'; mainAppContainer.style.display = 'flex'; switchView('dashboard'); };
             loginBtn.addEventListener('click', enterApp);
             signupBtn.addEventListener('click', enterApp);
-
 
             // --- NAVIGATION LOGIC ---
             const navLinks = document.querySelectorAll('.nav-item');
@@ -428,36 +480,17 @@
             const annotationSidebar = document.getElementById('annotation-sidebar');
             const userProfileLink = document.getElementById('user-profile-link');
 
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetView = link.getAttribute('data-view');
-                    switchView(targetView);
-                });
-            });
-            
+            navLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); switchView(link.dataset.view); }); });
             userProfileLink.addEventListener('click', () => switchView('profile'));
 
             function switchView(targetView, context = {}) {
                 document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active-nav'));
-                document.querySelectorAll(`.nav-item[data-view="${targetView}"]`).forEach(activeLink => {
-                    activeLink.classList.add('active-nav');
-                });
-                if (targetView === 'profile') {
-                    // no nav item for profile, don't remove active state
-                }
+                document.querySelectorAll(`.nav-item[data-view="${targetView}"]`).forEach(l => l.classList.add('active-nav'));
 
-                views.forEach(view => {
-                    view.style.display = view.id === `${targetView}-view` ? 'block' : 'none';
-                });
+                views.forEach(view => { view.style.display = view.id === `${targetView}-view` ? 'block' : 'none'; });
                 
-                if (targetView === 'annotate') {
-                    mainSidebar.style.display = 'none';
-                    annotationSidebar.style.display = 'flex';
-                } else {
-                    mainSidebar.style.display = 'flex';
-                    annotationSidebar.style.display = 'none';
-                }
+                mainSidebar.style.display = targetView === 'annotate' ? 'none' : 'flex';
+                annotationSidebar.style.display = targetView === 'annotate' ? 'flex' : 'none';
                 
                 let breadcrumbText = targetView.charAt(0).toUpperCase() + targetView.slice(1);
                 if (targetView === 'project') {
@@ -472,30 +505,20 @@
 
             // --- PROJECT PAGE LOGIC ---
             document.querySelectorAll('.project-card-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const projectName = link.dataset.projectName;
-                    switchView('project', { projectName });
-                });
+                link.addEventListener('click', (e) => { e.preventDefault(); switchView('project', { projectName: link.dataset.projectName }); });
             });
 
             function populateProjectGallery() {
                 const gallery = document.querySelector('#project-view .grid');
-                gallery.innerHTML = ''; // Clear previous
+                gallery.innerHTML = '';
                 for(let i=1; i<=16; i++) {
                     const imgContainer = document.createElement('div');
                     imgContainer.className = 'relative group cursor-pointer';
-                    imgContainer.innerHTML = `
-                        <img src="https://source.unsplash.com/random/200x200?car&sig=${i}" class="w-full h-32 object-cover rounded-lg">
-                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                           <button class="text-white p-2 bg-black/50 rounded-full"><i data-lucide="edit-3" class="h-4 w-4"></i></button>
-                        </div>
-                    `;
+                    imgContainer.innerHTML = `<img src="https://source.unsplash.com/random/200x200?car&sig=${i}" class="w-full h-32 object-cover rounded-lg"><div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><button class="text-white p-2 bg-black/50 rounded-full"><i data-lucide="edit-3" class="h-4 w-4"></i></button></div>`;
                     gallery.appendChild(imgContainer);
                 }
                 lucide.createIcons();
             }
-
 
             // --- GENERATE PAGE LOGIC ---
             const sourceImageGallery = document.getElementById('source-image-gallery');
@@ -504,19 +527,18 @@
             const finalPromptTextarea = document.getElementById('final-prompt');
             let selectedImage = null;
             const sourceImagesData = [
-                { src: 'https://images.unsplash.com/photo-1611601322175-8044f9345a99?q=80&w=200&auto=format&fit=crop', type: 'style', text: 'cinematic, high contrast, 35mm film look' },
-                { src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=200&auto=format&fit=crop', type: 'subject', text: 'a red sports car' },
-                { src: 'https://images.unsplash.com/photo-1549048375-7e45deab03c3?q=80&w=200&auto=format&fit=crop', type: 'scene', text: 'on a winding mountain road at sunset' },
-                { src: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=200&auto=format&fit=crop', type: 'style', text: 'dreamy, ethereal, soft focus' },
-                { src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=200&auto=format&fit=crop', type: 'subject', text: 'a yellow muscle car' },
-                { src: 'https://images.unsplash.com/photo-1470219556762-1771e7a93896?q=80&w=200&auto=format&fit=crop', type: 'scene', text: 'on a neon-lit city street at night' },
+                { src: 'https://images.unsplash.com/photo-1611601322175-8044f9345a99?q=80&w=200&auto=format&fit=crop', text: 'cinematic, high contrast, 35mm film look' },
+                { src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=200&auto=format&fit=crop', text: 'a red sports car' },
+                { src: 'https://images.unsplash.com/photo-1549048375-7e45deab03c3?q=80&w=200&auto=format&fit=crop', text: 'on a winding mountain road at sunset' },
+                { src: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=200&auto=format&fit=crop', text: 'dreamy, ethereal, soft focus' },
+                { src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=200&auto=format&fit=crop', text: 'a yellow muscle car' },
+                { src: 'https://images.unsplash.com/photo-1470219556762-1771e7a93896?q=80&w=200&auto=format&fit=crop', text: 'on a neon-lit city street at night' },
             ];
             sourceImagesData.forEach(data => {
                 const img = document.createElement('img');
                 img.src = data.src;
                 img.className = 'source-image w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity';
                 img.dataset.promptText = data.text;
-                img.dataset.type = data.type;
                 img.addEventListener('click', () => {
                     if (selectedImage) { selectedImage.classList.remove('selected'); }
                     selectedImage = img;
@@ -538,20 +560,24 @@
                 });
             });
             function updateFinalPrompt() {
-                const style = promptTexts.style.textContent;
-                const subject = promptTexts.subject.textContent;
-                const scene = promptTexts.scene.textContent;
-                finalPromptTextarea.value = [subject, scene, style].filter(Boolean).join(', ');
+                finalPromptTextarea.value = [promptTexts.subject.textContent, promptTexts.scene.textContent, promptTexts.style.textContent].filter(Boolean).join(', ');
             }
             
             // --- EXPORT MODAL LOGIC ---
             const exportBtn = document.getElementById('export-btn');
             const exportModal = document.getElementById('export-modal');
             const closeExportModalBtn = document.getElementById('close-export-modal');
+            const advancedOptionsToggle = document.getElementById('advanced-options-toggle');
+            const advancedOptions = document.getElementById('advanced-options');
 
-            exportBtn.addEventListener('click', () => exportModal.style.display = 'flex');
-            closeExportModalBtn.addEventListener('click', () => exportModal.style.display = 'none');
+            if(exportBtn) exportBtn.addEventListener('click', () => exportModal.style.display = 'flex');
+            if(closeExportModalBtn) closeExportModalBtn.addEventListener('click', () => exportModal.style.display = 'none');
+            if(advancedOptionsToggle) advancedOptionsToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                advancedOptions.classList.toggle('hidden');
+            });
             
+            switchView('dashboard'); // Set initial view
         });
     </script>
 </body>
